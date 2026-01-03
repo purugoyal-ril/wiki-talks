@@ -1,0 +1,21 @@
+# Python Dependencies for wiki-talks
+# Winter 30 Hackathon Project
+
+# LLM Integration
+google-generativeai>=0.3.0
+
+# Wikipedia Data Source
+wikipedia-api>=0.6.0
+
+# HTTP Requests (for ElevenLabs V3 API)
+requests>=2.31.0
+
+# Testing Framework
+pytest>=7.4.0
+pytest-mock>=3.11.0
+
+# Optional: Streamlit UI for local testing
+streamlit>=1.28.0
+
+# Note: pydub is NOT required - ElevenLabs V3 Dialogue API handles all audio processing
+
