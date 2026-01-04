@@ -122,10 +122,11 @@ class WikiScraper:
                 word_count += len(words)
         
         # Add sections
-        for section_title, section in page.sections.items():
+        for section in page.sections:
             if word_count >= max_words:
                 break
             
+            section_title = section.title
             section_text = section.text
             words = section_text.split()
             
