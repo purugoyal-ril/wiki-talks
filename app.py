@@ -20,6 +20,10 @@ if 'script_json' not in st.session_state:
     st.session_state.script_json = None
 if 'audio_bytes' not in st.session_state:
     st.session_state.audio_bytes = None
+if 'wikipedia_content' not in st.session_state:
+    st.session_state.wikipedia_content = None
+if 'scrape_mode' not in st.session_state:
+    st.session_state.scrape_mode = None
 
 # Sidebar
 with st.sidebar:
@@ -126,8 +130,17 @@ if st.button("🎙️ Generate Broadcast", type="primary", use_container_width=T
             st.error(f"❌ Wikipedia scraping failed: {error}")
             st.stop()
         
+        # Store in session state
+        st.session_state.wikipedia_content = content
+        st.session_state.scrape_mode = mode
+        
         st.success(f"✓ Scraped {len(content)} characters from Wikipedia")
         progress_bar.progress(30)
+        
+        # Display Wikipedia content in expander
+        with st.expander("📖 Step 1: Wikipedia Content", expanded=True):
+            st.text_area("Scraped Content", content, height=200, disabled=True, key="wiki_content_display")
+            st.caption(f"Mode: {mode} | Characters: {len(content):,}")
         
         # Step 2: Generate Script
         status_text.text("✍️ Generating Hinglish conversation script...")
@@ -156,6 +169,13 @@ if st.button("🎙️ Generate Broadcast", type="primary", use_container_width=T
         st.success(f"✓ Generated script with {len(script_json)} dialogue entries")
         progress_bar.progress(70)
         
+        # Display generated script in expander
+        with st.expander("✍️ Step 2: Generated Script", expanded=True):
+            for i, entry in enumerate(script_json):
+                speaker_icon = "🎙️" if entry['speaker'] == "Host" else "🗣️"
+                st.markdown(f"**{speaker_icon} {entry['speaker']}:** {entry['text']}")
+            st.caption(f"Total entries: {len(script_json)}")
+        
         # Step 3: Generate Audio
         status_text.text("🎵 Generating audio with ElevenLabs V3...")
         progress_bar.progress(80)
@@ -173,53 +193,79 @@ if st.button("🎙️ Generate Broadcast", type="primary", use_container_width=T
         progress_bar.progress(100)
         status_text.text("✓ Complete!")
         
+        # Display audio in expander
+        with st.expander("🎵 Step 3: Generated Audio", expanded=True):
+            st.audio(audio_bytes, format="audio/mp3")
+            st.download_button(
+                label="📥 Download MP3",
+                data=audio_bytes,
+                file_name="wiki_talk_output.mp3",
+                mime="audio/mp3",
+                key="download_audio_realtime"
+            )
+        
     except Exception as e:
         st.error(f"❌ Unexpected error: {str(e)}")
         st.stop()
 
-# Display Results
-if st.session_state.script_json and st.session_state.audio_bytes:
+# Display Results (persistent view of all outputs)
+if st.session_state.wikipedia_content or st.session_state.script_json or st.session_state.audio_bytes:
     st.divider()
     
-    # Stats Section
-    st.subheader("📊 Stats for Nerds")
-    col1, col2, col3 = st.columns(3)
+    # Show Step 1 output if available
+    if st.session_state.wikipedia_content:
+        with st.expander("📖 Step 1: Wikipedia Content", expanded=False):
+            st.text_area("Scraped Content", st.session_state.wikipedia_content, height=200, disabled=True, key="wiki_content_persistent")
+            mode_display = st.session_state.scrape_mode or "unknown"
+            st.caption(f"Mode: {mode_display} | Characters: {len(st.session_state.wikipedia_content):,}")
     
-    with col1:
-        total_chars = sum(len(entry['text']) for entry in st.session_state.script_json)
-        st.metric("Total Characters", f"{total_chars:,}")
+    # Show Step 2 output if available
+    if st.session_state.script_json:
+        with st.expander("✍️ Step 2: Generated Script", expanded=False):
+            for i, entry in enumerate(st.session_state.script_json):
+                speaker_icon = "🎙️" if entry['speaker'] == "Host" else "🗣️"
+                st.markdown(f"**{speaker_icon} {entry['speaker']}:** {entry['text']}")
+            st.caption(f"Total entries: {len(st.session_state.script_json)}")
     
-    with col2:
-        # Rough estimate: $0.30 per 1000 characters for ElevenLabs
-        estimated_cost = (total_chars / 1000) * 0.30
-        st.metric("Estimated Cost", f"${estimated_cost:.4f}")
+    # Show Step 3 output if available
+    if st.session_state.audio_bytes:
+        with st.expander("🎵 Step 3: Generated Audio", expanded=False):
+            st.audio(st.session_state.audio_bytes, format="audio/mp3")
+            st.download_button(
+                label="📥 Download MP3",
+                data=st.session_state.audio_bytes,
+                file_name="wiki_talk_output.mp3",
+                mime="audio/mp3",
+                key="download_audio_persistent"
+            )
     
-    with col3:
-        st.metric("Dialogue Entries", len(st.session_state.script_json))
-    
-    st.divider()
-    
-    # Audio Player
-    st.subheader("🎵 Generated Audio")
-    st.audio(st.session_state.audio_bytes, format="audio/mp3")
-    
-    # Download button
-    st.download_button(
-        label="📥 Download MP3",
-        data=st.session_state.audio_bytes,
-        file_name="wiki_talk_output.mp3",
-        mime="audio/mp3"
-    )
-    
-    st.divider()
-    
-    # Script JSON Display
-    with st.expander("📝 View Generated Script (JSON)"):
-        st.json(st.session_state.script_json)
+    # Stats Section (only if we have script)
+    if st.session_state.script_json:
+        st.divider()
+        st.subheader("📊 Stats for Nerds")
+        col1, col2, col3 = st.columns(3)
         
-        # Copy button
-        script_json_str = json.dumps(st.session_state.script_json, indent=2, ensure_ascii=False)
-        st.code(script_json_str, language="json")
+        with col1:
+            total_chars = sum(len(entry['text']) for entry in st.session_state.script_json)
+            st.metric("Total Characters", f"{total_chars:,}")
+        
+        with col2:
+            # Rough estimate: $0.30 per 1000 characters for ElevenLabs
+            estimated_cost = (total_chars / 1000) * 0.30
+            st.metric("Estimated Cost", f"${estimated_cost:.4f}")
+        
+        with col3:
+            st.metric("Dialogue Entries", len(st.session_state.script_json))
+        
+        st.divider()
+        
+        # Script JSON Display
+        with st.expander("📝 View Generated Script (JSON)"):
+            st.json(st.session_state.script_json)
+            
+            # Copy button
+            script_json_str = json.dumps(st.session_state.script_json, indent=2, ensure_ascii=False)
+            st.code(script_json_str, language="json")
 
 # Footer
 st.divider()

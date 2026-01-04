@@ -16,8 +16,8 @@ ELEVENLABS_BASE_URL = "https://api.elevenlabs.io/v1/text-to-dialogue"
 # Voice Cast Mapping (Host and Guest voices)
 # Replace with real ElevenLabs Voice IDs
 VOICE_CAST = {
-    "Host": "JBFqnCBsd6RMkjVDRZzb",  # Example Voice ID - replace with real one
-    "Guest": "Aw4FAjKCGjjNkVhN1Xmq"   # Example Voice ID - replace with real one
+    "Host": "tJadXrsBtUAO6pGZKpyW",  # Example Voice ID - replace with real one
+    "Guest": "hczKB0VbXLcBTn17ShYS"   # Example Voice ID - replace with real one
 }
 
 # Conversation Variants with Hinglish-focused System Prompts

@@ -6,7 +6,7 @@ Contains WikiScraper, ScriptGenerator, and AudioEngine classes
 import json
 import re
 import requests
-import google.generativeai as genai
+from google import genai
 import wikipediaapi  # Package: wikipedia-api (install via: pip install wikipedia-api)
 from typing import List, Dict, Optional, Tuple
 import config
@@ -46,7 +46,7 @@ class WikiScraper:
                 return None, f"Wikipedia page '{page_title}' not found"
             
             # Handle disambiguation
-            if 'disambiguation' in page.title.lower() or len(page.links) > 50:
+            if 'disambiguation' in page.title.lower():
                 # Auto-select first option
                 if page.links:
                     first_link = list(page.links.keys())[0]
@@ -65,23 +65,31 @@ class WikiScraper:
             
             return content, None
             
-        except wikipediaapi.exceptions.DisambiguationError as e:
-            # Auto-select first option
-            try:
-                first_option = e.options[0]
-                page = self.wiki.page(first_option)
-                if page.exists():
-                    content = page.summary if mode.lower() == "fast" else self._extract_sections(page, max_words=4000)
-                    return content, None
-                return None, f"Could not access disambiguation option: {first_option}"
-            except Exception:
-                return None, f"Disambiguation error: {str(e)}"
-        
-        except wikipediaapi.exceptions.PageError as e:
-            return None, f"Page error: {str(e)}"
-        
         except Exception as e:
-            return None, f"Error scraping Wikipedia: {str(e)}"
+            # Handle disambiguation and page errors generically
+            # Note: wikipediaapi doesn't have an exceptions module, so we catch all exceptions
+            # and check error messages to determine the type
+            error_str = str(e).lower()
+            if 'disambiguation' in error_str or 'ambiguous' in error_str:
+                # Try to auto-select first option from links if we have a page object
+                try:
+                    # Try to get the page again to access links
+                    page_title = self._extract_title_from_url(url)
+                    if page_title:
+                        page = self.wiki.page(page_title)
+                        if hasattr(page, 'links') and page.links:
+                            first_link = list(page.links.keys())[0]
+                            selected_page = self.wiki.page(first_link)
+                            if selected_page.exists():
+                                content = selected_page.summary if mode.lower() == "fast" else self._extract_sections(selected_page, max_words=4000)
+                                return content, None
+                except Exception:
+                    pass
+                return None, f"Disambiguation error: {str(e)}"
+            elif 'page' in error_str or 'not found' in error_str:
+                return None, f"Page error: {str(e)}"
+            else:
+                return None, f"Error scraping Wikipedia: {str(e)}"
     
     def _extract_title_from_url(self, url: str) -> Optional[str]:
         """Extract page title from Wikipedia URL"""
@@ -144,14 +152,13 @@ class ScriptGenerator:
         Args:
             api_key: Google Gemini API key
         """
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(
-            "gemini-1.5-flash",
-            generation_config={
-                "response_mime_type": "application/json",
-                "temperature": 0.8
-            }
-        )
+        self.client = genai.Client(api_key=api_key)
+        self.model_name = 'gemini-2.5-flash'
+        # Store generation config for use in generate_content
+        self.generation_config = {
+            "response_mime_type": "application/json",
+            "temperature": 0.8
+        }
     
     def generate_script(self, text: str, variant: str = "RJ", duration: int = 120) -> Tuple[Optional[List[Dict]], Optional[str]]:
         """
@@ -192,7 +199,11 @@ Requirements:
 - NO markdown code fences in output"""
             
             # Generate script
-            response = self.model.generate_content(f"{system_prompt}\n\n{user_prompt}")
+            response = self.client.models.generate_content(
+                model=self.model_name,
+                contents=f"{system_prompt}\n\n{user_prompt}",
+                config=self.generation_config
+            )
             
             # Extract JSON from response
             script_text = response.text

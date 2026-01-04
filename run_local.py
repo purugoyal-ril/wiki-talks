@@ -54,43 +54,67 @@ def generate_wiki_talk(wikipedia_url: str, variant: str = "RJ", mode: str = "fas
     gemini_key, eleven_key = get_api_keys()
     
     # Step 1: Scrape Wikipedia
-    print("\n[1/3] Scraping Wikipedia...")
+    print("\n" + "=" * 60)
+    print("[1/3] Step 1: Scraping Wikipedia...")
+    print("=" * 60)
     scraper = WikiScraper()
     content, error = scraper.scrape(wikipedia_url, mode)
     if error:
         return False, f"Wikipedia scraping failed: {error}", None, None
     print(f"✓ Scraped {len(content)} characters from Wikipedia")
+    print(f"✓ Mode: {mode}")
+    
+    # Display Wikipedia content
+    print("\n📖 Wikipedia Content:")
+    print("-" * 60)
+    # Show first 500 characters as preview, or full content if shorter
+    preview_length = min(500, len(content))
+    print(content[:preview_length])
+    if len(content) > preview_length:
+        print(f"\n... (showing first {preview_length} of {len(content)} characters)")
+    print("-" * 60)
     
     # Step 2: Generate Script
-    print("\n[2/3] Generating Hinglish conversation script...")
+    print("\n" + "=" * 60)
+    print("[2/3] Step 2: Generating Hinglish conversation script...")
+    print("=" * 60)
     script_gen = ScriptGenerator(gemini_key)
     script_json, error = script_gen.generate_script(content, variant, duration=120)
     if error:
         return False, f"Script generation failed: {error}", None, None
     print(f"✓ Generated script with {len(script_json)} dialogue entries")
     
-    # Display script preview
-    print("\nScript Preview:")
-    for i, entry in enumerate(script_json[:3], 1):
-        text_preview = entry['text'][:80] + "..." if len(entry['text']) > 80 else entry['text']
-        print(f"  {i}. {entry['speaker']}: {text_preview}")
-    if len(script_json) > 3:
-        print(f"  ... and {len(script_json) - 3} more entries")
+    # Display full script
+    print("\n✍️ Generated Script:")
+    print("-" * 60)
+    for i, entry in enumerate(script_json, 1):
+        speaker_icon = "🎙️" if entry['speaker'] == "Host" else "🗣️"
+        print(f"\n{i}. {speaker_icon} {entry['speaker']}:")
+        print(f"   {entry['text']}")
+    print("-" * 60)
     
     # Step 3: Generate Audio
-    print("\n[3/3] Generating audio with ElevenLabs V3...")
+    print("\n" + "=" * 60)
+    print("[3/3] Step 3: Generating audio with ElevenLabs V3...")
+    print("=" * 60)
     audio_engine = AudioEngine()
     audio_bytes, error = audio_engine.generate_dialogue_v3(script_json, eleven_key)
     if error:
         return False, f"Audio generation failed: {error}", script_json, None
     print(f"✓ Generated audio ({len(audio_bytes)} bytes)")
     
+    # Calculate audio duration estimate (rough: ~1KB per second for MP3)
+    estimated_duration = len(audio_bytes) / 1000  # rough estimate
+    print(f"✓ Estimated duration: ~{estimated_duration:.1f} seconds")
+    
     # Save audio file
+    print("\n💾 Saving audio file...")
     try:
         with open(output_file, 'wb') as f:
             f.write(audio_bytes)
-        print(f"\n✓ Audio saved to: {output_file}")
+        print(f"✓ Audio saved to: {output_file}")
         audio_path = os.path.abspath(output_file)
+        print(f"✓ Full path: {audio_path}")
     except Exception as e:
         return False, f"Error saving audio file: {str(e)}", script_json, None
     
