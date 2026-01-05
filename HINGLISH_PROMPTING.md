@@ -2,5 +2,10 @@
 
 ## How We Achieve Natural Hinglish Conversations
 
-Our LLM prompting strategy for The Synthetic Radio Host - Wiki-talks focuses on creating authentic Hinglish (Hindi-English code-switching) through carefully crafted system prompts and V3 audio tag integration. The system prompt explicitly instructs the model to use natural filler words like "achcha", "hain na", "yaar", and "waah" while maintaining conversational flow. We leverage ElevenLabs V3's audio tags (`[laughs]`, `[sighs]`, `[whispers]`) to add emotional depth, and use punctuation (`...` for hesitation) and CAPS (for emphasis like "Arre BAS!") to guide natural pacing. Interruptions are handled by ending one speaker's line with `-` and starting the next with `[fast]`, creating realistic conversational overlaps. By avoiding SSML and relying on V3's native audio processing, we ensure the output sounds natural and non-robotic, with the API automatically handling conversation flow and timing.
+We evolved from generic "convert to Hinglish" instructions to a structured **PERSONA → CONTEXT → TASK → FORMAT** framework with three key improvements:
 
+1. **Explicit Language Ratio**: Specified "50% Hindi, 50% English" rather than vague "use Hinglish."
+
+2. **Good/Bad Examples**: Showed concrete patterns like *Bad:* "I am going to the market" vs *Good:* "I am going to the market, tu chalega?" — and anti-patterns like redundant grammar ("What's the scene kya hai?").
+
+3. **Emotion Over Facts**: Instructed the model to convert Wikipedia-style facts/dates into emotional reactions (shock, pride) rather than dry narration, making conversations feel natural rather than scripted readings.
