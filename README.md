@@ -1,10 +1,10 @@
-# wiki-talks 🎙️
+# The Synthetic Radio Host - Wiki-talks 🎙️
 
 Generate natural-sounding Hinglish radio conversations from Wikipedia articles using Google Gemini and ElevenLabs V3 Dialogue API.
 
 ## Overview
 
-wiki-talks is a Python pipeline that:
+The Synthetic Radio Host - Wiki-talks is a Python pipeline that:
 1. Scrapes content from Wikipedia articles
 2. Generates natural Hinglish conversation scripts using Google Gemini
 3. Converts scripts to audio using ElevenLabs V3 text-to-dialogue endpoint

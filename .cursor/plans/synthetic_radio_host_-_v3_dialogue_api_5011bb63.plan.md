@@ -75,7 +75,7 @@ todos:
       - implement-streamlit-ui
 ---
 
-# wiki-talks - V3 Dialogue API Implementation Plan
+# The Synthetic Radio Host - Wiki-talks - V3 Dialogue API Implementation Plan
 
 ## Architecture Overview
 
@@ -178,11 +178,11 @@ All requirements from the evaluation criteria are incorporated:
 - **Standalone script** that can run entirely in Google Colab
 - **Structure**:
   ```python
-              # Cell 1: Install dependencies
-              # Cell 2: Import libraries
-              # Cell 3: Configuration (or import from config.py if uploaded)
-              # Cell 4: Main pipeline function
-              # Cell 5: Execution example
+                # Cell 1: Install dependencies
+                # Cell 2: Import libraries
+                # Cell 3: Configuration (or import from config.py if uploaded)
+                # Cell 4: Main pipeline function
+                # Cell 5: Execution example
   ```
 
 
@@ -228,14 +228,14 @@ All requirements from the evaluation criteria are incorporated:
 - Each dict: `{"speaker": "Host", "text": "..."}` (simplified schema)
 - **CRITICAL V3 System Prompt**:
     ```javascript
-                            "You are a Bollywood Radio Scriptwriter. Convert the summary into a dialogue (Hinglish). 
-                            STRICT V3 AUDIO RULES:
-                            1. Do NOT use SSML (no <break>, no <prosody>).
-                            2. Use Audio Tags inside the text: [laughs], [sighs], [whispers], [clears throat], [gasps].
-                            3. Use Punctuation for Pacing: Use ... for hesitation.
-                            4. Use CAPS for emphasis (e.g., 'Arre BAS! Stop it!').
-                            5. Interruptions: To simulate an interruption, end one speaker's line with - and start the next with [fast].
-                            6. Output: Strict JSON. No Markdown ticks."
+                                "You are a Bollywood Radio Scriptwriter. Convert the summary into a dialogue (Hinglish). 
+                                STRICT V3 AUDIO RULES:
+                                1. Do NOT use SSML (no <break>, no <prosody>).
+                                2. Use Audio Tags inside the text: [laughs], [sighs], [whispers], [clears throat], [gasps].
+                                3. Use Punctuation for Pacing: Use ... for hesitation.
+                                4. Use CAPS for emphasis (e.g., 'Arre BAS! Stop it!').
+                                5. Interruptions: To simulate an interruption, end one speaker's line with - and start the next with [fast].
+                                6. Output: Strict JSON. No Markdown ticks."
     ```
 
 
@@ -352,4 +352,3 @@ All requirements from the evaluation criteria are incorporated:
 
 - Use real ElevenLabs Voice IDs in VOICE_CAST
 - Ensure Host and Guest have distinct, natural-sounding voices
-- Test voice compatibility with Hinglish content

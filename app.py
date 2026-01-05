@@ -1,5 +1,5 @@
 """
-wiki-talks - Streamlit UI for local testing and development
+The Synthetic Radio Host - Wiki-talks - Streamlit UI for local testing and development
 """
 
 import streamlit as st
@@ -10,7 +10,7 @@ import config
 
 # Page configuration
 st.set_page_config(
-    page_title="wiki-talks",
+    page_title="The Synthetic Radio Host - Wiki-talks",
     page_icon="🎙️",
     layout="wide"
 )
@@ -27,7 +27,7 @@ if 'scrape_mode' not in st.session_state:
 
 # Sidebar
 with st.sidebar:
-    st.title("wiki-talks 🎙️")
+    st.title("The Synthetic Radio Host - Wiki-talks 🎙️")
     st.markdown("Generate Hinglish radio conversations from Wikipedia articles")
     
     st.divider()

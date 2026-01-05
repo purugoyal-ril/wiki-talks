@@ -1,8 +1,8 @@
-# wiki-talks - Technical Design Document
+# The Synthetic Radio Host - Wiki-talks - Technical Design Document
 
 ## Project Overview
 
-**Project Name**: wiki-talks  
+**Project Name**: The Synthetic Radio Host - Wiki-talks  
 **Hackathon**: Winter 30  
 **Track**: AI/ML  
 **Submission Date**: January 2026
@@ -13,7 +13,7 @@ Create a Python pipeline that generates natural-sounding 2-minute Hinglish radio
 
 ### Solution Overview
 
-wiki-talks uses a three-stage pipeline:
+The Synthetic Radio Host - Wiki-talks uses a three-stage pipeline:
 1. **Wikipedia Scraping**: Extract content from Wikipedia articles with error handling
 2. **Script Generation**: Use Google Gemini to create Hinglish conversation scripts following V3 audio rules
 3. **Audio Synthesis**: Use ElevenLabs V3 text-to-dialogue API to generate natural conversation audio
@@ -333,5 +333,5 @@ Each variant has a tailored system prompt that guides the LLM to generate approp
 
 ## Conclusion
 
-wiki-talks demonstrates a complete pipeline from Wikipedia content to natural Hinglish audio conversations. The use of ElevenLabs V3 Dialogue API simplifies audio generation while maintaining high quality and natural flow. The modular architecture ensures maintainability and testability.
+The Synthetic Radio Host - Wiki-talks demonstrates a complete pipeline from Wikipedia content to natural Hinglish audio conversations. The use of ElevenLabs V3 Dialogue API simplifies audio generation while maintaining high quality and natural flow. The modular architecture ensures maintainability and testability.
 

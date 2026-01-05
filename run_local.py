@@ -1,5 +1,5 @@
 """
-wiki-talks - Local Runner Script
+The Synthetic Radio Host - Wiki-talks - Local Runner Script
 Run this on your local machine without Colab
 
 Usage:
@@ -47,7 +47,7 @@ def generate_wiki_talk(wikipedia_url: str, variant: str = "RJ", mode: str = "fas
         Tuple of (success: bool, message: str, script_json: list, audio_path: str)
     """
     print("=" * 60)
-    print("wiki-talks - Generating Hinglish Conversation")
+    print("The Synthetic Radio Host - Wiki-talks - Generating Hinglish Conversation")
     print("=" * 60)
     
     # Get API keys
@@ -119,7 +119,7 @@ def generate_wiki_talk(wikipedia_url: str, variant: str = "RJ", mode: str = "fas
         return False, f"Error saving audio file: {str(e)}", script_json, None
     
     print("\n" + "=" * 60)
-    print("✓ Success! wiki-talks generation complete")
+    print("✓ Success! The Synthetic Radio Host - Wiki-talks generation complete")
     print("=" * 60)
     
     return True, "Success", script_json, audio_path
@@ -128,7 +128,7 @@ def generate_wiki_talk(wikipedia_url: str, variant: str = "RJ", mode: str = "fas
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="wiki-talks - Generate Hinglish conversations from Wikipedia")
+    parser = argparse.ArgumentParser(description="The Synthetic Radio Host - Wiki-talks - Generate Hinglish conversations from Wikipedia")
     parser.add_argument(
         "--url",
         type=str,
@@ -163,7 +163,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    print("wiki-talks - Local Runner")
+    print("The Synthetic Radio Host - Wiki-talks - Local Runner")
     print(f"URL: {args.url}")
     print(f"Variant: {args.variant}")
     print(f"Mode: {args.mode}\n")

@@ -1,4 +1,4 @@
-# Python Dependencies for wiki-talks
+# Python Dependencies for The Synthetic Radio Host - Wiki-talks
 # Winter 30 Hackathon Project
 
 # LLM Integration

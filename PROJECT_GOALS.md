@@ -1,8 +1,8 @@
-# wiki-talks - Project Goals & Master Document
+# The Synthetic Radio Host - Wiki-talks - Project Goals & Master Document
 
 ## Project Overview
 
-**Project Name**: wiki-talks  
+**Project Name**: The Synthetic Radio Host - Wiki-talks  
 **Hackathon**: Winter 30  
 **Track**: AI/ML  
 **Submission Deadline**: January 5, 2026
@@ -14,7 +14,7 @@ Build a Python pipeline that takes a Wikipedia article (e.g., about "Mumbai Indi
 ## Key Requirements
 
 ### Primary Deliverable
-- **Main Submission**: `colab_submission.py` - A standalone, Colab-compatible Python script
+- **Main Submission**: `submission.ipynb` - A standalone, Colab-compatible Python script
 - **Sample Output**: `samples/sample_output.mp3` - One MP3 sample demonstrating the pipeline
 - **Hinglish Prompting Explanation**: `HINGLISH_PROMPTING.md` - 100-word explanation of LLM prompting strategy
 

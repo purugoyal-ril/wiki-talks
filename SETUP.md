@@ -1,4 +1,4 @@
-# wiki-talks - Setup Guide
+# The Synthetic Radio Host - Wiki-talks - Setup Guide
 
 ## Prerequisites
 

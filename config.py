@@ -1,5 +1,5 @@
 """
-Configuration module for wiki-talks
+Configuration module for The Synthetic Radio Host - Wiki-talks
 Contains variants, voice mappings, API settings, and helper functions
 """
 

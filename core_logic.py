@@ -1,5 +1,5 @@
 """
-Core business logic for wiki-talks
+Core business logic for The Synthetic Radio Host - Wiki-talks
 Contains WikiScraper, ScriptGenerator, and AudioEngine classes
 """
 
@@ -17,7 +17,7 @@ class WikiScraper:
     
     def __init__(self):
         self.wiki = wikipediaapi.Wikipedia(
-            user_agent='wiki-talks/1.0 (https://github.com/yourusername/wiki-talks)',
+            user_agent='wiki-talks/1.0 (https://github.com/purugoyal-ril/wiki-talks)',
             language='en'
         )
     
