@@ -96,7 +96,7 @@ with st.sidebar:
         )
 
 # Main Page
-st.title("wiki-talks")
+st.title("The Synthetic Radio Host - Wiki-talks")
 st.markdown("**Generate natural Hinglish radio conversations from Wikipedia articles**")
 
 # Generate Button
@@ -270,7 +270,7 @@ if st.session_state.wikipedia_content or st.session_state.script_json or st.sess
 # Footer
 st.divider()
 st.markdown(
-    "<div style='text-align: center; color: gray;'>wiki-talks | Winter 30 Hackathon</div>",
+    "<div style='text-align: center; color: gray;'>The Synthetic Radio Host - Wiki-talks | Winter 30 Hackathon</div>",
     unsafe_allow_html=True
 )
 

@@ -164,45 +164,40 @@ class ScriptGenerator:
     def generate_script(self, text: str, variant: str = "RJ", duration: int = 120) -> Tuple[Optional[List[Dict]], Optional[str]]:
         """
         Generate Hinglish conversation script from Wikipedia content
-        
+
         Args:
             text: Wikipedia content text
             variant: "RJ", "Business", or "Teams"
             duration: Target duration in seconds (default 120 for 2 minutes)
-        
+
         Returns:
             Tuple of (script_json, error_message). script_json is None if error occurred.
         """
         try:
-            # Get variant-specific system prompt
-            system_prompt = config.VARIANTS.get(variant, config.VARIANTS["RJ"])
+            # Get variant-specific prompt template
+            prompt_template = config.VARIANTS.get(variant, config.VARIANTS["RJ"])
+            
+            # Get speaker names for this variant
+            speaker_names = config.SPEAKER_NAMES.get(variant, config.SPEAKER_NAMES["RJ"])
+            speaker_a = speaker_names["Person A"]
+            speaker_b = speaker_names["Person B"]
             
             # Calculate target word count (~150 WPM for conversational)
             target_words = int((duration / 60) * 150)  # ~300 words for 2 minutes
             
-            # Create user prompt
-            user_prompt = f"""Convert the following Wikipedia content into a natural 2-minute Hinglish conversation between Host and Guest.
-
-Target: Approximately {target_words} words total for ~{duration} seconds of conversation.
-
-Content:
-{text[:3000]}  # Limit input to avoid token limits
-
-Requirements:
-- Output strict JSON array format: [{{"speaker": "Host", "text": "..."}}, {{"speaker": "Guest", "text": "..."}}]
-- Use natural Hinglish (Hindi-English mix)
-- Include interruptions (end line with -, next starts with [fast])
-- Use audio tags: [laughs], [sighs], [whispers], [clears throat], [gasps]
-- Use ... for hesitation
-- Use CAPS for emphasis
-- Make it conversational and natural
-- NO SSML tags
-- NO markdown code fences in output"""
+            # Format the prompt template with actual values
+            # Limit text to avoid token limits
+            formatted_prompt = prompt_template.format(
+                text=text[:3000],
+                speaker_a=speaker_a,
+                speaker_b=speaker_b,
+                target_words=target_words
+            )
             
             # Generate script
             response = self.client.models.generate_content(
                 model=self.model_name,
-                contents=f"{system_prompt}\n\n{user_prompt}",
+                contents=formatted_prompt,
                 config=self.generation_config
             )
             
@@ -219,14 +214,17 @@ Requirements:
             if not isinstance(script_json, list):
                 return None, "Script must be a JSON array"
             
+            # Get expected speaker names for validation
+            expected_speakers = [speaker_a, speaker_b]
+            
             # Validate each entry
             for entry in script_json:
                 if not isinstance(entry, dict):
                     return None, "Each script entry must be a dictionary"
                 if "speaker" not in entry or "text" not in entry:
                     return None, "Each entry must have 'speaker' and 'text' fields"
-                if entry["speaker"] not in ["Host", "Guest"]:
-                    return None, f"Speaker must be 'Host' or 'Guest', got: {entry['speaker']}"
+                if entry["speaker"] not in expected_speakers:
+                    return None, f"Speaker must be '{speaker_a}' or '{speaker_b}' for variant '{variant}', got: {entry['speaker']}"
             
             return script_json, None
             
