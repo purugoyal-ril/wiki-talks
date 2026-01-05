@@ -76,7 +76,7 @@ with st.sidebar:
     
     mode = st.selectbox(
         "Scraping Mode",
-        options=["fast", "pro"],
+        options=["pro", "fast"],
         help="Fast: summary only | Pro: sections (capped at 4000 words)"
     )
     
@@ -87,12 +87,6 @@ with st.sidebar:
         debug_mode = st.checkbox(
             "Debug Mode",
             help="Generate only 3 lines of script to save credits"
-        )
-        
-        custom_endpoint = st.text_input(
-            "Custom ElevenLabs Endpoint (optional)",
-            value="",
-            help="Leave empty to use default endpoint"
         )
 
 # Main Page
@@ -181,8 +175,7 @@ if st.button("🎙️ Generate Broadcast", type="primary", use_container_width=T
         progress_bar.progress(80)
         
         audio_engine = AudioEngine()
-        base_url = custom_endpoint if custom_endpoint else None
-        audio_bytes, error = audio_engine.generate_dialogue_v3(script_json, eleven_key, base_url)
+        audio_bytes, error = audio_engine.generate_dialogue_v3(script_json, eleven_key, None)
         
         if error:
             st.error(f"❌ Audio generation failed: {error}")

@@ -33,7 +33,7 @@ def get_api_keys():
     return gemini_key, eleven_key
 
 
-def generate_wiki_talk(wikipedia_url: str, variant: str = "RJ", mode: str = "fast", output_file: str = "wiki_talk_output.mp3"):
+def generate_wiki_talk(wikipedia_url: str, variant: str = "RJ", mode: str = "pro", output_file: str = "wiki_talk_output.mp3"):
     """
     Complete pipeline: Wikipedia URL → Script → Audio
     
@@ -146,7 +146,7 @@ if __name__ == "__main__":
         "--mode",
         type=str,
         choices=["fast", "pro"],
-        default="fast",
+        default="pro",
         help="Scraping mode: fast (summary) or pro (sections)"
     )
     parser.add_argument(
